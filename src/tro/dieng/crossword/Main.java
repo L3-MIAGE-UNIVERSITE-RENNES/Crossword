@@ -18,7 +18,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
 
         // Set the stage title and scene
-        stage.setTitle("TicTacToe");
+        stage.setTitle("Crossword Puzzle");
         stage.setResizable(false);
         stage.setScene(scene);
         // Show the stage
