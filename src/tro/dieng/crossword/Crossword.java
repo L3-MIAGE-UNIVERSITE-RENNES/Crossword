@@ -31,7 +31,6 @@ public class Crossword extends Grid<CrosswordSquare> {
             for (int col = 1; col <= getWidth(); col++) {
                 CrosswordSquare square = new CrosswordSquare(' ', " ", " ", " ", false);
                 setCell(row, col, square);
-                // square.setStatut(true);
             }
         }
     }
@@ -60,13 +59,23 @@ public class Crossword extends Grid<CrosswordSquare> {
                 } else {
                     crossword.verticalClues.add(clue);
                 }
-
                 for(int i = 0; i<solution.length(); i++) {
                     if(horizontal) {
                         crossword.setSolution(row, col+i, solution.toUpperCase().charAt(i));
                     } else {
                         crossword.setSolution(row+i, col, solution.toUpperCase().charAt(i));
                     }
+                }
+            }
+
+            // noircir les cases
+            for (int i = 1; i <= crossword.getHeight(); i++) {
+                for (int j = 1; j <= crossword.getWidth(); j++) {
+                    if(crossword.getCell(i, j).getSolution() == ' '){
+                        crossword.setBlackSquare(i, j, true);
+                        System.out.println(crossword.getCell(i, j).getSolution());
+                    }
+
                 }
             }
         }
@@ -79,15 +88,17 @@ public class Crossword extends Grid<CrosswordSquare> {
 
     public boolean isBlackSquare(int row, int column) {
         if (isWithinGrid(row, column)) {
-            return (Character) getCell(row, column).getSolution() == null;
+            return getCell(row, column).getSolution() == null;
         } else {
-            throw new IllegalArgumentException("Row and column must be within the grid dimensions");
+            throw new IllegalArgumentException("Row and column must be within the grid dimensions " + row + " - " + column);
         }
     }
 
     public void setBlackSquare(int row, int column, boolean black) {
         if (isWithinGrid(row, column)) {
-            if(!black){
+            if(black){
+                getCell(row, column).setSolution(null);
+            } else if(getCell(row, column) == null) {
                 getCell(row, column).setSolution(' ');
             }
         } else {

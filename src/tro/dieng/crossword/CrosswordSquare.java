@@ -1,8 +1,7 @@
 package tro.dieng.crossword;
 
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -13,7 +12,7 @@ import javafx.scene.input.KeyEvent;
 
 public class CrosswordSquare extends Label {
 
-    private char solution;
+    private Character solution;
     private StringProperty propostion;
     private String horizontale;
     private String verticale;
@@ -31,27 +30,35 @@ public class CrosswordSquare extends Label {
         setAlignment(Pos.CENTER);
         setPadding(new Insets(-10, 0, -10, 0));
 
-        setOnMouseClicked(event -> requestFocus());
+        setOnMouseClicked(event -> {
+            if(this.solution != null) {
+                requestFocus();
+            }
+        });
         setOnMouseEntered(event -> setCursor(Cursor.HAND));
 
         focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
+
+            if (newValue && this.solution != null ) {
                 setStyle("-fx-border-color: blue");
-            } else {
+            } else if(oldValue && this.solution != null) {
                 setStyle("-fx-border-color: NONE;");
             }
         });
 
         // Ajouter un écouteur d'événements pour les événements de clavier
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            String text = event.getText();
-            if (text.matches("[A-Za-zÀ-ÿ]")) {
-                setText(text.toUpperCase());
-                this.setPropostion(String.valueOf(text.toUpperCase().charAt(0)));
-                this.getPropostion();
-            } else {
-                event.consume();
+            if(this.solution != null){
+                String text = event.getText();
+                if (text.matches("[A-Za-zÀ-ÿ]")) {
+                    setText(text.toUpperCase());
+                    this.setPropostion(String.valueOf(text.toUpperCase().charAt(0)));
+                    this.getPropostion();
+                } else {
+                    event.consume();
+                }
             }
+
         });
 
     }
@@ -60,11 +67,11 @@ public class CrosswordSquare extends Label {
     }
 
 
-    public char getSolution() {
+    public Character getSolution() {
         return solution;
     }
 
-    public void setSolution(char solution) {
+    public void setSolution(Character solution) {
         this.solution = solution;
     }
 
