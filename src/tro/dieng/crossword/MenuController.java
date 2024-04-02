@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -48,8 +49,11 @@ public class MenuController implements Initializable {
     public void playGame(ActionEvent e, String urlFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(MenuController.class.getResource(urlFXML));
+
             Parent root = (Parent) loader.load();
             Scene scene = new Scene(root);
+            // Load the CSS file
+            // scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("style.css")).toExternalForm());
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();

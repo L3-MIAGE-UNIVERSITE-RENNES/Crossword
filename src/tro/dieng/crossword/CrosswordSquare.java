@@ -1,8 +1,11 @@
 package tro.dieng.crossword;
 
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 public class CrosswordSquare extends Label {
 
@@ -18,6 +21,29 @@ public class CrosswordSquare extends Label {
         this.horizontale = horizontale;
         this.verticale = verticale;
         this.statut = statut;
+
+        setPrefSize(30, 30);
+        setAlignment(Pos.CENTER);
+        setPadding(new Insets(-10, 0, -10, 0));
+
+        setOnMouseClicked(event -> requestFocus());
+        setOnMouseEntered(event -> {
+            setCursor(Cursor.HAND);
+        });
+
+        focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                setStyle("-fx-border-color: blue");
+            } else {
+                setStyle("-fx-border-color: NONE;");
+            }
+        });
+
+        // Ajouter un écouteur d'événements pour les événements de clavier
+        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            setText(event.getText().toUpperCase());
+        });
+
     }
 
     public CrosswordSquare() {
@@ -77,4 +103,19 @@ public class CrosswordSquare extends Label {
     public void setStatut(boolean statut) {
         this.statut = statut;
     }
+
+    private void handleMouseInteractions(int row, int column) {
+        setOnMouseClicked(event -> handleSquareClick(row, column));
+        setOnMouseEntered(event -> handleMouseOver(row, column));
+        setOnMouseExited(event -> setStyle("-fx-background-color: NONE"));
+    }
+
+    private void handleSquareClick(int row, int column) {
+
+    }
+
+    private void handleMouseOver(int row, int column) {
+    }
+
+
 }

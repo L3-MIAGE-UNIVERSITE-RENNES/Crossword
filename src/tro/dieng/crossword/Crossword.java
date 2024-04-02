@@ -1,20 +1,34 @@
 package tro.dieng.crossword;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Crossword extends Grid<CrosswordSquare> {
 
+    private ObservableList<Clue> verticalClues;
+
+    private ObservableList<Clue> horizontalClues;
+
     private Crossword(int height, int width) {
         super(height, width);
+        horizontalClues = FXCollections.observableArrayList();
+        verticalClues = FXCollections.observableArrayList();
         initializeGrid();
     }
 
     private void initializeGrid() {
         for (int row = 1; row <= getHeight(); row++) {
             for (int col = 1; col <= getWidth(); col++) {
-                CrosswordSquare square = new CrosswordSquare(' ', ' ', " ", " ", false);
+                CrosswordSquare square;
+                if(row==1  && col== 1){
+                    square = new CrosswordSquare(' ', ' ', " ", " ", true);
+                } else {
+                    square = new CrosswordSquare(' ', ' ', " ", " ", false);
+                }
                 setCell(row, col, square);
                 setBlackSquare(row, col, true);
             }
@@ -39,6 +53,12 @@ public class Crossword extends Grid<CrosswordSquare> {
                 int col = rs2.getInt("colonne");
                 String solution = rs2.getString("solution");
                 crossword.setDefinition(row, col, horizontal, definition);
+                Clue clue = new Clue(definition, row, col, horizontal);
+                if(horizontal){
+                    crossword.horizontalClues.add(clue);
+                } else {
+                    crossword.verticalClues.add(clue);
+                }
 
                 for(int i = 0; i<solution.length(); i++) {
                     if(horizontal) {
@@ -129,5 +149,13 @@ public class Crossword extends Grid<CrosswordSquare> {
         } else {
             throw new IllegalArgumentException("Can't set black square definition");
         }
+    }
+
+    public ObservableList<Clue> getVerticalClues() {
+        return verticalClues;
+    }
+
+    public ObservableList<Clue> getHorizontalClues() {
+        return horizontalClues;
     }
 }
