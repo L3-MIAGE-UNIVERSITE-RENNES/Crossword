@@ -18,6 +18,7 @@ public class ChargeGridTest {
     @Test
     void test() throws SQLException {
         Crossword cross = Crossword.createPuzzle(grids, 10);
+        System.out.println(cross);
         char[][] grille = {
                 {'A', 'R', 'C', 'H', 'E', 'R'},
                 {'D', 'O', 'U', 'A', 'N', 'E'},
@@ -34,7 +35,7 @@ public class ChargeGridTest {
             for (int j = 0; j < grille[i].length; j++) {
                 // Appeler la méthode setProposition avec les indices de ligne et de colonne
                 // et la valeur de la cellule courante
-                cross.setProposition(i + 1, j + 1, grille[i][j]);
+                cross.setProposition(i + 1, j + 1, String.valueOf(grille[i][j]));
             }
         }
 
@@ -43,8 +44,13 @@ public class ChargeGridTest {
                 char s = cross.getSolution(i+1, j+1);
                 char p = cross.getProposition(i + 1, j + 1);
                 assertEquals(s, p);
+
+                if(cross.isBlackSquare(i+1, j+1)){
+                    System.out.println(s);
+                }
             }
         }
+
 
     }
 }

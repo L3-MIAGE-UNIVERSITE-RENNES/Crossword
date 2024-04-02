@@ -1,5 +1,6 @@
 package tro.dieng.crossword;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,24 +14,24 @@ public class Crossword extends Grid<CrosswordSquare> {
 
     private ObservableList<Clue> horizontalClues;
 
+    private boolean isHorizontalDirection;
+
+
+
     private Crossword(int height, int width) {
         super(height, width);
         horizontalClues = FXCollections.observableArrayList();
         verticalClues = FXCollections.observableArrayList();
+        isHorizontalDirection = true;
         initializeGrid();
     }
 
     private void initializeGrid() {
         for (int row = 1; row <= getHeight(); row++) {
             for (int col = 1; col <= getWidth(); col++) {
-                CrosswordSquare square;
-                if(row==1  && col== 1){
-                    square = new CrosswordSquare(' ', ' ', " ", " ", true);
-                } else {
-                    square = new CrosswordSquare(' ', ' ', " ", " ", false);
-                }
+                CrosswordSquare square = new CrosswordSquare(' ', " ", " ", " ", false);
                 setCell(row, col, square);
-                setBlackSquare(row, col, true);
+                // square.setStatut(true);
             }
         }
     }
@@ -112,7 +113,7 @@ public class Crossword extends Grid<CrosswordSquare> {
 
     public char getProposition(int row, int column) {
         if (!isBlackSquare(row, column)) {
-            Character cellValue = getCell(row, column).getPropostion();
+            Character cellValue = getCell(row, column).getPropostion().getValue().charAt(0);
             if (cellValue != null) {
                 return cellValue;
             } else {
@@ -123,7 +124,7 @@ public class Crossword extends Grid<CrosswordSquare> {
         }
     }
 
-    public void setProposition(int row, int column, char prop) {
+    public void setProposition(int row, int column, String prop) {
         if (!isBlackSquare(row, column)) {
             getCell(row, column).setPropostion(prop);
         } else {
@@ -157,5 +158,13 @@ public class Crossword extends Grid<CrosswordSquare> {
 
     public ObservableList<Clue> getHorizontalClues() {
         return horizontalClues;
+    }
+
+    public boolean isHorizontalDirection() {
+        return this.isHorizontalDirection;
+    }
+
+    public void setHorizontalDirection(boolean isHorizontalDirection) {
+        this.isHorizontalDirection = isHorizontalDirection;
     }
 }

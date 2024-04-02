@@ -42,7 +42,6 @@ public class MenuController implements Initializable {
 
     public void play(ActionEvent e) {
                 Main.choice = gridList.getSelectionModel().getSelectedIndex();
-                System.out.println(Main.choice);
                 playGame(e,"Crossword.fxml");
     }
 
@@ -52,6 +51,14 @@ public class MenuController implements Initializable {
 
             Parent root = (Parent) loader.load();
             Scene scene = new Scene(root);
+            // Adding a listener to the focus owner property
+            scene.focusOwnerProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    System.out.println("Focused Node: " + newValue);
+                } else {
+                    System.out.println("No node is focused.");
+                }
+            });
             // Load the CSS file
             // scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("style.css")).toExternalForm());
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
