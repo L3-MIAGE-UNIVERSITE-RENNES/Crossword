@@ -125,44 +125,28 @@ public class CrosswordController implements Initializable {
 
         switch (keyCode) {
             case LEFT:
-                if (col == 1 && row == 1) {
-                    col = width;
-                    row = height;
-                } else if (col == 1) {
-                    row--;
-                    col = width;
-                } else {
+                if(col != 1){
                     col--;
                 }
                 crossword.setHorizontalDirection(true);
                 break;
 
             case RIGHT:
-                if (col == width && row == height) {
-                    col = 1;
-                    row = 1;
-                } else if (col == width) {
-                    row++;
-                    col = 1;
-                } else {
+                if (col != width ) {
                     col++;
                 }
                 crossword.setHorizontalDirection(true);
                 break;
 
             case DOWN:
-                if (row == height) {
-                    row = 1;
-                } else {
+                if (row != height) {
                     row++;
                 }
                 crossword.setHorizontalDirection(false);
                 break;
 
             case UP:
-                if (row == 1) {
-                    row = height;
-                } else {
+                if (row != 1) {
                     row--;
                 }
                 crossword.setHorizontalDirection(false);
@@ -176,48 +160,32 @@ public class CrosswordController implements Initializable {
         while (crossword.isBlackSquare(row, col)) {
             switch (keyCode) {
                 case LEFT:
-                    if (col == 1 && row == 1) {
-                        col = width;
-                        row = height;
-                    } else if (col == 0) {
-                        row--;
-                        col = width - 1;
-                    } else {
+                    if (col != 1 ) {
                         col--;
                     }
                     break;
 
                 case RIGHT:
-                    if (col == width && row == height) {
-                        col = 1;
-                        row = 1;
-                    } else if (col == width) {
-                        row++;
-                        col = 1;
-                    } else {
+                    if (col != width) {
                         col++;
                     }
                     break;
 
                 case DOWN:
-                    if (row == height) {
+                    if (row != height) {
                         row = 1;
-                    } else {
-                        row++;
                     }
                     break;
 
                 case UP:
-                    if (row == 1) {
-                        row = height;
-                    } else {
+                    if (row != 1) {
                         row--;
                     }
                     break;
             }
         }
 
-        // Update the TextField style and focus
+        // set focus on the next label
         Label label = crossword.getCell(row, col);
         label.requestFocus();
     }
@@ -233,7 +201,6 @@ public class CrosswordController implements Initializable {
         switch (eventKC) {
             case ENTER:
                 displayCorrectLetters(crossword);
-                System.out.println("Case correct");
                 break;
 
             case DOWN:

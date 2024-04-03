@@ -38,7 +38,6 @@ public class CrosswordSquare extends Label {
         setOnMouseEntered(event -> setCursor(Cursor.HAND));
 
         focusedProperty().addListener((observable, oldValue, newValue) -> {
-
             if (newValue && this.solution != null ) {
                 setStyle("-fx-border-color: blue");
             } else if(oldValue && this.solution != null) {
@@ -58,7 +57,6 @@ public class CrosswordSquare extends Label {
                     event.consume();
                 }
             }
-
         });
 
     }
