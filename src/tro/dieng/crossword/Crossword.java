@@ -1,6 +1,5 @@
 package tro.dieng.crossword;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

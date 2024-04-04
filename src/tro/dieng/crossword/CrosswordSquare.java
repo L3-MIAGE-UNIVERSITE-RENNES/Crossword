@@ -2,17 +2,14 @@ package tro.dieng.crossword;
 
 
 
-import javafx.animation.ScaleTransition;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.util.Duration;
 
 public class CrosswordSquare extends Label {
 
@@ -86,7 +83,7 @@ public class CrosswordSquare extends Label {
 
     private void  handleEvent(){
         setOnMouseClicked(event -> {
-            if(this.solution != null) {
+            if(!isBlack()) {
                 requestFocus();
             }
         });
@@ -94,15 +91,20 @@ public class CrosswordSquare extends Label {
         setOnMouseEntered(event -> setCursor(Cursor.HAND));
 
         focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && this.solution != null ) {
-                setStyle("-fx-border-color: blue");
-            } else if(oldValue && this.solution != null) {
+            if (newValue && !isBlack() ) {
+                if(this.solution == this.propostion.get().charAt(0)){
+                    setStyle("-fx-background-color: green; -fx-border-color: blue; -fx-border-width: 0.5;");
+                } else {
+                    setStyle("-fx-border-color: blue");
+                }
+
+            } else if(oldValue && !isBlack()) {
                 setStyle("-fx-border-color: NONE;");
             }
         });
 
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if(this.solution != null){
+            if(!isBlack()){
                 String text = event.getText();
                 if (text.matches("[A-Za-z]")) {
                     setText(text.toUpperCase());
@@ -113,6 +115,10 @@ public class CrosswordSquare extends Label {
                 }
             }
         });
+    }
+
+    private boolean isBlack(){
+        return this.solution == null;
     }
 
 

@@ -71,6 +71,7 @@ public class MenuController implements Initializable {
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             KeyCombination closeCombination = new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN);
             scene.setOnKeyPressed(event -> {
+                System.out.println(event);
                 if (closeCombination.match(event)) {
                     stage.close();
                 }

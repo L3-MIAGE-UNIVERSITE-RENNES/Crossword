@@ -6,7 +6,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -17,7 +16,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class CrosswordController implements Initializable {
@@ -85,13 +84,50 @@ public class CrosswordController implements Initializable {
                 int i1 = i;
                 int j2 = j;
                 square.focusedProperty().addListener((observable, oldValue, newValue) -> {
+
                     if(newValue) {
-                        String t = listHorizontal.getItems().get(i1-1);
-                        listHorizontal.scrollTo(i1-1);
-                        listHorizontal.getSelectionModel().select(i1-1);
-                        listVertical.scrollTo(j2-1);
-                        listVertical.getSelectionModel().select(j2-1);
-                        this.clueDelimiter(t, crossword);
+                        // Traitement des indices horizontaux
+                        HashMap<Integer, int[]> HClues = getHorizontalClues(i1, crossword);
+                        Set<Map.Entry<Integer, int[]>> entrySet = HClues.entrySet();
+                        for (Map.Entry<Integer, int[]> entry : entrySet) {
+                            int clueIndex = entry.getKey();
+                            int[] clueCells = entry.getValue();
+                            for(int k = 0; k < clueCells.length; k++ ){
+                                if(clueCells[k] == j2){
+                                    String ind = crossword.getDefinition(i1, clueIndex, true);
+                                    for(String item:  listHorizontal.getItems()){
+                                        if(item.startsWith(ind)){
+                                            listHorizontal.scrollTo(listHorizontal.getItems().indexOf(item));
+                                            listHorizontal.getSelectionModel().select(listHorizontal.getItems().indexOf(item));
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                        // Traitement des indices verticaux
+                        HashMap<Integer, int[]> VClues = getVerticalClues(j2, crossword);
+                        Set<Map.Entry<Integer, int[]>> entryVSet = VClues.entrySet();
+                        for (Map.Entry<Integer, int[]> entry : entryVSet) {
+                            int clueIndex = entry.getKey();
+                            int[] clueCells = entry.getValue();
+                            for(int k = 0; k < clueCells.length; k++ ){
+                                if(clueCells[k] == j2){
+                                    String ind = crossword.getDefinition(clueIndex, j2, false);
+                                    for(String item:  listVertical.getItems()){
+                                        if(item.startsWith(ind)){
+                                            listVertical.scrollTo(listVertical.getItems().indexOf(item));
+                                            listVertical.getSelectionModel().select(listVertical.getItems().indexOf(item));
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    } else {
+                        listHorizontal.getSelectionModel().clearSelection();
+                        listVertical.getSelectionModel().clearSelection();
                     }
                 });
             }
@@ -109,9 +145,15 @@ public class CrosswordController implements Initializable {
                 int finalJ = j;
                 square.getPropostion().addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        if(crossword.isHorizontalDirection() && finalJ<= crossword.getWidth() && finalJ + 1 <= crossword.getWidth() && !crossword.isBlackSquare(finalI , finalJ+1)){
+                        if(crossword.isHorizontalDirection()
+                                && finalJ<= crossword.getWidth()
+                                && finalJ + 1 <= crossword.getWidth()
+                                && !crossword.isBlackSquare(finalI , finalJ+1)){
                             crossword.getCell(finalI, finalJ +1).requestFocus();
-                        } else if(!crossword.isHorizontalDirection() && finalI<= crossword.getHeight() && finalI +1 <= crossword.getHeight() && !crossword.isBlackSquare(finalI+1, finalJ)) {
+                        } else if(!crossword.isHorizontalDirection()
+                                && finalI<= crossword.getHeight()
+                                && finalI +1 <= crossword.getHeight()
+                                && !crossword.isBlackSquare(finalI+1, finalJ)) {
                             crossword.getCell(finalI + 1, finalJ).requestFocus();
                         }
                     }
@@ -301,14 +343,6 @@ public class CrosswordController implements Initializable {
         }
     }
 
-    private void clueDelimiter(String clue, Crossword crossword){
-        for (Clue element : crossword.getHorizontalClues()) {
-            if(!clue.startsWith(clue) && element.getRow() == 1){
-                System.out.println("lig: " + 1 + " "+ element.getClue());
-            }
-        }
-    }
-
     private void displayLetters(Crossword crossword){
         for (int i = 0; i < crossword.getHeight(); i++) {
             for (int j = 0; j < crossword.getWidth(); j++) {
@@ -328,5 +362,63 @@ public class CrosswordController implements Initializable {
             }
         }
     }
+
+    private HashMap<Integer, int[]> getHorizontalClues(int row, Crossword crossword) {
+        HashMap<Integer, int[]> clues = new HashMap<>();
+        ArrayList<Integer> cl = new ArrayList<Integer>();
+        for (int j = 0; j < crossword.width; j++) {
+            if (!crossword.getCell(row, j + 1).getHorizontale().equals(" ")) {
+                cl.add(j + 1);
+            }
+        }
+
+        // Création du HashMap à partir de la liste cl
+        for (int i = 0; i < cl.size(); i++) {
+            int start = cl.get(i);
+            int end;
+            if (i == cl.size() - 1) { // Si c'est le dernier élément de la liste
+                end = crossword.width; // La fin est la largeur de la grille
+            } else {
+                end = cl.get(i + 1) - 1; // La fin est l'indice précédent l'élément suivant
+            }
+
+            // Création du tableau d'entiers pour la plage
+            int[] range = new int[end - start + 1];
+            for (int j = 0; j < range.length; j++) {
+                range[j] = start + j;
+            }
+
+            // Ajout de la plage au HashMap
+            clues.put(start, range);
+        }
+        return clues;
+    }
+    private HashMap<Integer, int[]> getVerticalClues(int col, Crossword crossword) {
+        HashMap<Integer, int[]> clues = new HashMap<>();
+        ArrayList<Integer> cl = new ArrayList<Integer>();
+        for (int j = 0; j < crossword.height; j++) {
+            if (!crossword.getCell(j + 1, col).getVerticale().equals(" ")) {
+                cl.add(j + 1);
+            }
+        }
+
+        for (int i = 0; i < cl.size(); i++) {
+            int start = cl.get(i);
+            int end;
+            if (i == cl.size() - 1) {
+                end = crossword.height;
+            } else {
+                end = cl.get(i + 1) - 1;
+            }
+
+            int[] range = new int[end - start + 1];
+            for (int j = 0; j < range.length; j++) {
+                range[j] = start + j;
+            }
+            clues.put(start, range);
+        }
+        return clues;
+    }
+
 
 }
