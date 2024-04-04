@@ -4,10 +4,12 @@ package tro.dieng.crossword;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,19 +34,59 @@ public class CrosswordController implements Initializable {
             Database database = new Database();
             Crossword  crossword = Crossword.createPuzzle(database, Main.choice + 1);
 
-            // Configure grids
-            this.configureGrids(crossword);
+            configureGrids(crossword);
 
-            // Configure listView
             configureListView(crossword);
 
-            crossword.getCell(1, 1).requestFocus();
-
-            // Current direction configuration
             configureCurrentDirection(crossword);
 
+            selectClue(crossword);
+
+            updateSelectedClueColor(listHorizontal);
+            updateSelectedClueColor(listVertical);
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    private void updateSelectedClueColor(ListView<String> list){
+        list.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+
+                        if (isSelected()) {
+                            setStyle("-fx-background-color: red;");
+                        } else {
+                            setStyle("");
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    private void selectClue(Crossword crossword){
+        for (int i = 1; i <= crossword.getHeight(); i++) {
+            for (int j = 1; j <= crossword.getWidth(); j++) {
+                CrosswordSquare square = crossword.getCell(i, j);
+                int i1 = i;
+                int j2 = j;
+                square.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue) {
+                        String t = listHorizontal.getItems().get(i1-1);
+                        listHorizontal.scrollTo(i1-1);
+                        listHorizontal.getSelectionModel().select(i1-1);
+                        listVertical.scrollTo(j2-1);
+                        listVertical.getSelectionModel().select(j2-1);
+                        this.clueDelimiter(t, crossword);
+                    }
+                });
+            }
         }
     }
 
@@ -239,6 +281,14 @@ public class CrosswordController implements Initializable {
                 if(!crossword.isBlackSquare(i+1, j+1) && square.getSolution() == square.getPropostion().get().charAt(0)){
                     square.setStyle("-fx-background-color: green; -fx-border-color: black; -fx-border-width: 0.5;");
                 }
+            }
+        }
+    }
+
+    private void clueDelimiter(String clue, Crossword crossword){
+        for (Clue element : crossword.getHorizontalClues()) {
+            if(!clue.startsWith(clue) && element.getRow() == 1){
+                System.out.println("lig: " + 1 + " "+ element.getClue());
             }
         }
     }
