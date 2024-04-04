@@ -3,6 +3,9 @@ package tro.dieng.crossword;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
@@ -22,6 +25,12 @@ public class Main extends Application {
         stage.setTitle("Crossword Puzzle");
         stage.setResizable(false);
         stage.setScene(scene);
+        KeyCombination closeCombination = new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN);
+        scene.setOnKeyPressed(event -> {
+            if (closeCombination.match(event)) {
+                stage.close();
+            }
+        });
         // Show the stage
         stage.show();
 

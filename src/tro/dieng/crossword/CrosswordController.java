@@ -1,8 +1,12 @@
 package tro.dieng.crossword;
 
 
+import javafx.animation.ScaleTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -10,12 +14,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
 public class CrosswordController implements Initializable {
+
     @FXML
     private AnchorPane anchorPane;
 
@@ -41,6 +47,8 @@ public class CrosswordController implements Initializable {
             configureCurrentDirection(crossword);
 
             selectClue(crossword);
+
+            displayLetters(crossword);
 
             updateSelectedClueColor(listHorizontal);
             updateSelectedClueColor(listVertical);
@@ -141,10 +149,18 @@ public class CrosswordController implements Initializable {
         }
 
         // Set the anchor constraints to center the content
-        AnchorPane.setTopAnchor(grid, 30.0);
-        AnchorPane.setBottomAnchor(grid, 50.0);
-        AnchorPane.setLeftAnchor(grid, 100.0);
-        AnchorPane.setRightAnchor(grid, 50.0);
+        if(crossword.getHeight() >= 15) {
+            AnchorPane.setTopAnchor(grid, 20.0);
+            AnchorPane.setLeftAnchor(grid, 20.0);
+            AnchorPane.setBottomAnchor(grid, 20.0);
+            AnchorPane.setRightAnchor(grid, 20.0);
+        } else {
+            AnchorPane.setTopAnchor(grid, 50.0);
+            AnchorPane.setLeftAnchor(grid, 200.0);
+            AnchorPane.setBottomAnchor(grid, 50.0);
+            AnchorPane.setRightAnchor(grid, 50.0);
+        }
+
 
         anchorPane.getChildren().add(grid);
     }
@@ -289,6 +305,26 @@ public class CrosswordController implements Initializable {
         for (Clue element : crossword.getHorizontalClues()) {
             if(!clue.startsWith(clue) && element.getRow() == 1){
                 System.out.println("lig: " + 1 + " "+ element.getClue());
+            }
+        }
+    }
+
+    private void displayLetters(Crossword crossword){
+        for (int i = 0; i < crossword.getHeight(); i++) {
+            for (int j = 0; j < crossword.getWidth(); j++) {
+                CrosswordSquare square = crossword.getCell(i+1, j+1);
+                square.textProperty().addListener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(500));
+                        scaleTransition.setFromX(0);
+                        scaleTransition.setToX(1);
+                        scaleTransition.setFromY(0);
+                        scaleTransition.setToY(1);
+                        scaleTransition.setNode(square);
+                        scaleTransition.play();
+                    }
+                });
             }
         }
     }

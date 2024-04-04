@@ -2,13 +2,17 @@ package tro.dieng.crossword;
 
 
 
+import javafx.animation.ScaleTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Duration;
 
 public class CrosswordSquare extends Label {
 
@@ -25,43 +29,10 @@ public class CrosswordSquare extends Label {
         this.verticale = verticale;
         this.statut = statut;
 
+        setProperties();
+        handleEvent();
 
-        setPrefSize(30, 30);
-        setAlignment(Pos.CENTER);
-        setPadding(new Insets(-10, 0, -10, 0));
 
-        setOnMouseClicked(event -> {
-            if(this.solution != null) {
-                requestFocus();
-            }
-        });
-        setOnMouseEntered(event -> setCursor(Cursor.HAND));
-
-        focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && this.solution != null ) {
-                setStyle("-fx-border-color: blue");
-            } else if(oldValue && this.solution != null) {
-                setStyle("-fx-border-color: NONE;");
-            }
-        });
-
-        // Ajouter un écouteur d'événements pour les événements de clavier
-        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if(this.solution != null){
-                String text = event.getText();
-                if (text.matches("[A-Za-zÀ-ÿ]")) {
-                    setText(text.toUpperCase());
-                    this.setPropostion(String.valueOf(text.toUpperCase().charAt(0)));
-                    this.getPropostion();
-                } else {
-                    event.consume();
-                }
-            }
-        });
-
-    }
-
-    public CrosswordSquare() {
     }
 
 
@@ -107,30 +78,44 @@ public class CrosswordSquare extends Label {
         this.verticale = verticale;
     }
 
+    private void setProperties(){
+        setPrefSize(30, 30);
+        setAlignment(Pos.CENTER);
+        setPadding(new Insets(-10, 0, -10, 0));
+    }
 
+    private void  handleEvent(){
+        setOnMouseClicked(event -> {
+            if(this.solution != null) {
+                requestFocus();
+            }
+        });
 
-    public boolean getStatut() {
-        return statut;
+        setOnMouseEntered(event -> setCursor(Cursor.HAND));
+
+        focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && this.solution != null ) {
+                setStyle("-fx-border-color: blue");
+            } else if(oldValue && this.solution != null) {
+                setStyle("-fx-border-color: NONE;");
+            }
+        });
+
+        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if(this.solution != null){
+                String text = event.getText();
+                if (text.matches("[A-Za-zÀ-ÿ]")) {
+                    setText(text.toUpperCase());
+                    this.setPropostion(String.valueOf(text.toUpperCase().charAt(0)));
+                    this.getPropostion();
+                } else {
+                    event.consume();
+                }
+            }
+        });
     }
 
 
-
-    public void setStatut(boolean statut) {
-        this.statut = statut;
-    }
-
-    private void handleMouseInteractions(int row, int column) {
-        setOnMouseClicked(event -> handleSquareClick(row, column));
-        setOnMouseEntered(event -> handleMouseOver(row, column));
-        setOnMouseExited(event -> setStyle("-fx-background-color: NONE"));
-    }
-
-    private void handleSquareClick(int row, int column) {
-
-    }
-
-    private void handleMouseOver(int row, int column) {
-    }
 
 
 }
