@@ -104,7 +104,7 @@ public class CrosswordSquare extends Label {
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if(this.solution != null){
                 String text = event.getText();
-                if (text.matches("[A-Za-zÀ-ÿ]")) {
+                if (text.matches("[A-Za-z]")) {
                     setText(text.toUpperCase());
                     this.setPropostion(String.valueOf(text.toUpperCase().charAt(0)));
                     this.getPropostion();

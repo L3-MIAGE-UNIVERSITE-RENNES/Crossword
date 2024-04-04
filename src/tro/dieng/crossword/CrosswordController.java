@@ -99,19 +99,19 @@ public class CrosswordController implements Initializable {
     }
 
     private void configureCurrentDirection(Crossword crossword){
-        for (int i = 0; i < crossword.getHeight(); i++) {
-            for (int j = 0; j < crossword.getWidth(); j++) {
-                CrosswordSquare square = crossword.getCell(i+1, j+1);
+        for (int i = 1; i <= crossword.getHeight(); i++) {
+            for (int j = 1; j <= crossword.getWidth(); j++) {
+                CrosswordSquare square = crossword.getCell(i, j);
                 square.setOnKeyReleased((e) -> {
                     releaseKey(e, crossword);
                 });
-                int finalI = i + 1;
-                int finalJ = j + 1;
+                int finalI = i;
+                int finalJ = j;
                 square.getPropostion().addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        if(crossword.isHorizontalDirection() && finalJ<= crossword.getWidth() && !crossword.isBlackSquare(finalI , finalJ+1)){
+                        if(crossword.isHorizontalDirection() && finalJ<= crossword.getWidth() && finalJ + 1 <= crossword.getWidth() && !crossword.isBlackSquare(finalI , finalJ+1)){
                             crossword.getCell(finalI, finalJ +1).requestFocus();
-                        } else if(!crossword.isHorizontalDirection() && finalI<= crossword.getHeight() && !crossword.isBlackSquare(finalI+1, finalJ)) {
+                        } else if(!crossword.isHorizontalDirection() && finalI<= crossword.getHeight() && finalI +1 <= crossword.getHeight() && !crossword.isBlackSquare(finalI+1, finalJ)) {
                             crossword.getCell(finalI + 1, finalJ).requestFocus();
                         }
                     }
