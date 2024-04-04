@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
@@ -51,16 +50,6 @@ public class MenuController implements Initializable {
 
             Parent root = (Parent) loader.load();
             Scene scene = new Scene(root);
-            // Adding a listener to the focus owner property
-            scene.focusOwnerProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
-                    System.out.println("Focused Node: " + newValue);
-                } else {
-                    System.out.println("No node is focused.");
-                }
-            });
-            // Load the CSS file
-            // scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("style.css")).toExternalForm());
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
