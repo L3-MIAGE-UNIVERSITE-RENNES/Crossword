@@ -24,6 +24,12 @@ public class Database {
         String url = "jdbc:mysql://localhost:8889/crossword";
         String username = "root";
         String password = "root";
+        // Je n'arrive pas a me connecter avec les accès de l'université
+        // Raison pour laquelle j'ai commenté cette partie code
+        // J'ai utilisé mon serveur local pour mes tests
+        // String url = "jdbc:mysql://mysql.istic.univ-rennes1.fr/base_ktro";
+        // String username = "user_ktro";
+        // String password = "K@d!usql0412";
         connect = DriverManager.getConnection(url, username, password);
         return connect;
 
